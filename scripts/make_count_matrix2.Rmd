@@ -1,0 +1,27 @@
+---
+title: "Make Count Matrix"
+author: "REB"
+date: "6/20/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+names <- unlist(read.delim("run2_samples.txt", stringsAsFactors=F, header=F))
+counts <- list()
+for (i in names) {
+  this.filename <- paste0(i, ".multiway.genes.expected_read_counts")
+  counts[[i]] <- read.table(this.filename, row.names=1, stringsAsFactors=F)[, 9]
+}
+count.matrix <- as.data.frame(do.call(cbind, counts))
+colnames(count.matrix) <- names
+# get row names
+df <- read.table(this.filename, row.names=1, stringsAsFactors=F)[, 1:2]
+row.names(count.matrix) <- row.names(df)
+# remove 'total' line
+count.matrix <- count.matrix[-1, ]
+write.csv(count.matrix, "run2_byGene_count_matrix.csv")
+```
